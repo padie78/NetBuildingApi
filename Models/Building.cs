@@ -17,6 +17,8 @@ public class Building
     public string? Picture { get; set; }
     public DateTime? DateCreation { get; set; }
 
+    public Guid? User { get; set; }
+
 
 
 }

@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using NetBuilding.models;
-
 namespace NetBuilding.Data;
+
 
 public class AppDbContext : IdentityDbContext<User>
 {

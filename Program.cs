@@ -1,4 +1,8 @@
+using NetBuilding.Middleware;
+
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddControllers();
 
 builder.Services.AddAuthorization(); // <-- This registers the core authorization services
 builder.Services.AddAuthentication();
@@ -17,8 +21,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseMiddleware<ManagerMiddleware>();
+
 //app.UseAuthentication();
 //app.UseAuthorization();
 //app.UseHttpsRedirection();
+
+app.MapControllers();
 
 app.Run();

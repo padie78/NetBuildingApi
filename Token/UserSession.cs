@@ -4,6 +4,7 @@ namespace NetBuilding.Token;
 
 public class UserSession : IUserSession
 {
+    
     private readonly IHttpContextAccessor _httpContextAccessor;
 
     public UserSession(IHttpContextAccessor httpContextAccessor)
@@ -17,5 +18,5 @@ public class UserSession : IUserSession
                                                         .FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?
                                                         .Value;
         return userName!;
-    }
+    } 
 } 

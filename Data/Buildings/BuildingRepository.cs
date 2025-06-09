@@ -21,17 +21,17 @@ public class BuildingRepository : IBuildingRepository
     }
     public bool SaveChanges()
     {
-        throw new NotImplementedException();
+       return _context.SaveChanges() >= 0;
     }
 
     public IEnumerable<Building> GetAllBuilding()
     {
-        throw new NotImplementedException();
+        return _context.Buildings!.ToList();
     }
 
     public Building GetBuildingById(int id)
     {
-        throw new NotImplementedException();
+        return _context.Buildings!.FirstOrDefault(b => b.Id == id)!;   
     }
 
     public async Task AddBuilding(Building building)
@@ -44,6 +44,8 @@ public class BuildingRepository : IBuildingRepository
 
     public void DelBuilding(int id)
     {
-        throw new NotImplementedException();
+        var building = _context.Buildings!.FirstOrDefault(b => b.Id == id);
+        _context.Buildings!.Remove(building!);  
+        _context.SaveChanges();            
     }
 }

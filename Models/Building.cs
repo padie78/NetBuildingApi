@@ -10,15 +10,10 @@ public class Building
     public int Id { get; set; }
     public string? Name { get; set; }
     public string? Address { get; set; }
-
     [Required]
     [Column(TypeName = "decimal(18,4)")]
     public Decimal Price { get; set; }    
     public string? Picture { get; set; }
     public DateTime? DateCreation { get; set; }
-
     public Guid? User { get; set; }
-
-
-
 }

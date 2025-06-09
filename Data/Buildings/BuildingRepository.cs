@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Identity;
+using NetBuilding.Middleware;
 using NetBuilding.models;
 using NetBuilding.Token;
 
@@ -36,7 +37,15 @@ public class BuildingRepository : IBuildingRepository
 
     public async Task AddBuilding(Building building)
     {
-        var user = await _userManager.FindByNameAsync(_userSession.getUserSession());
+        var user = await _userManager.FindByNameAsync(_userSession.getUserSession()) ?? throw new MiddlewareException(System.Net.HttpStatusCode.Unauthorized,
+                                          new { message = "User not autohrized" });
+
+        if (building == null)
+        {
+            throw new MiddlewareException(System.Net.HttpStatusCode.BadRequest,
+                                          new { message = "Building already exist in DB" });
+        }
+
         building.DateCreation = DateTime.Now;
         building.User = Guid.Parse(user!.Id);
         _context.Buildings!.Add(building);

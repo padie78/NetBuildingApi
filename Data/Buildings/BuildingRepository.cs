@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using NetBuilding.Middleware;
 using NetBuilding.models;
 using NetBuilding.Token;
@@ -10,7 +11,6 @@ public class BuildingRepository : IBuildingRepository
 
     private readonly AppDbContext _context;
     private readonly IUserSession _userSession;
-
     private readonly UserManager<User> _userManager;
 
 
@@ -20,19 +20,21 @@ public class BuildingRepository : IBuildingRepository
         _userSession = session;
         _userManager = userManager;
     }
-    public bool SaveChanges()
+    public async Task<bool> SaveChanges()
     {
-       return _context.SaveChanges() >= 0;
+       return await _context.SaveChangesAsync() >= 0;
     }
 
-    public IEnumerable<Building> GetAllBuilding()
+    public async Task<IEnumerable<Building>> GetAllBuilding()
     {
-        return _context.Buildings!.ToList();
+        return await _context.Buildings!.ToListAsync();
     }
 
-    public Building GetBuildingById(int id)
+    public async Task<Building> GetBuildingById(int id)
     {
-        return _context.Buildings!.FirstOrDefault(b => b.Id == id)!;   
+        return await _context.Buildings!.FirstOrDefaultAsync(b => b.Id == id) 
+               ?? throw new MiddlewareException(System.Net.HttpStatusCode.NotFound,
+                                          new { message = "Building not found" });   
     }
 
     public async Task AddBuilding(Building building)
@@ -51,9 +53,9 @@ public class BuildingRepository : IBuildingRepository
         _context.Buildings!.Add(building);
     }
 
-    public void DelBuilding(int id)
+    public async Task DelBuilding(int id)
     {
-        var building = _context.Buildings!.FirstOrDefault(b => b.Id == id);
+        var building = await _context.Buildings!.FirstOrDefaultAsync(b => b.Id == id);
         _context.Buildings!.Remove(building!);  
         _context.SaveChanges();            
     }

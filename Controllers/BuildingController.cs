@@ -21,45 +21,38 @@ public class BuildingController : ControllerBase
     }
 
     [HttpGet]
-    public ActionResult<IEnumerable<BuildingResponseDTO>> GetBuildings()
+    public async Task<ActionResult<IEnumerable<BuildingResponseDTO>>> GetBuildings()
     {
-        var buildings = _buildingRepository.GetAllBuilding();
+        var buildings = await _buildingRepository.GetAllBuilding();
         return Ok(_mapper.Map<IEnumerable<BuildingResponseDTO>>(buildings));
     }
 
     [HttpGet("{id}")]
-    public ActionResult<BuildingResponseDTO> GetBuilding(int id)
+    public async Task<ActionResult<BuildingResponseDTO>> GetBuildingById(int id)
     {
-        var building = _buildingRepository.GetBuildingById(id) ?? throw new MiddlewareException(System.Net.HttpStatusCode.NotFound, new { message = $"Building not found {id}" });
+        var building = await _buildingRepository.GetBuildingById(id) ?? throw new MiddlewareException(System.Net.HttpStatusCode.NotFound, new { message = $"Building not found {id}" });
         return Ok(_mapper.Map<BuildingResponseDTO>(building));
     }
 
     [HttpPost()]
-    public ActionResult<BuildingResponseDTO> RegisterBuilding([FromBody] BuildingRequestDTO request)
+    public async Task<ActionResult<BuildingResponseDTO>> RegisterBuilding([FromBody] BuildingRequestDTO request)
     {
         var building = _mapper.Map<models.Building>(request);
-        _buildingRepository.AddBuilding(building);
-        if (!_buildingRepository.SaveChanges())
-        {
-            throw new MiddlewareException(HttpStatusCode.InternalServerError, new { message = "Error saving changes" });
-        }
-
-
+        await _buildingRepository.AddBuilding(building);
+        await _buildingRepository.SaveChanges();
+       
         return CreatedAtRoute(
-            nameof(GetBuilding),
+            nameof(RegisterBuilding),
             new { building.Id },
             _mapper.Map<BuildingResponseDTO>(building)
         );
     }
 
     [HttpDelete("{id}")]
-    public ActionResult DelBuilding(int id)
+    public async Task<ActionResult> DelBuilding(int id)
     {  
-        _buildingRepository.DelBuilding(id);
-        if (!_buildingRepository.SaveChanges())
-        {
-            throw new MiddlewareException(HttpStatusCode.InternalServerError, new { message = "Error deleting building" });
-        }
+        await _buildingRepository.DelBuilding(id);
+        await _buildingRepository.SaveChanges();
         return Ok();
     }
 

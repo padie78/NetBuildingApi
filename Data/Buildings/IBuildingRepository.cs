@@ -4,13 +4,13 @@ using NetBuilding.models;
 
 public interface IBuildingRepository
 {
-    public bool SaveChanges();
+    Task<bool> SaveChanges();
 
-    public IEnumerable<Building> GetAllBuilding();
+    Task<IEnumerable<Building>> GetAllBuilding();
 
-    public Building GetBuildingById(int id);
+    Task<Building> GetBuildingById(int id);
 
-    public Task AddBuilding(Building building);
+    Task AddBuilding(Building building);
 
-    public void DelBuilding(int id);
+    Task DelBuilding(int id);
 }
